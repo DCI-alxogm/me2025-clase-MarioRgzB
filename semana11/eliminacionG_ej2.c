@@ -61,7 +61,6 @@ int main() {
             mostrarMatriz(matriz);
         }
 
-        // Eliminación
         for(int k = i+1; k < N; k++) {
             double factor = matriz[k][i] / matriz[i][i];
             printf("Volver cero elemento (%d,%d) usando factor: %f\n", k+1, i+1, factor);
@@ -73,8 +72,6 @@ int main() {
         
         mostrarMatriz(matriz);
     }
-    
-    // Sustitución hacia atrás
     for(int i = N-1; i >= 0; i--) {
         solucion[i] = matriz[i][N];  
         
@@ -91,4 +88,5 @@ int main() {
     }
     
     return 0;
+
 }

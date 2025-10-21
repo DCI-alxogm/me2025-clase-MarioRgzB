@@ -1,7 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
-
 #define EPS 1e-10
 
 void imprimir(double **mat, int n, int m) {
@@ -158,4 +157,5 @@ int main() {
     free(sol_gj);
     
     return 0;
+
 }

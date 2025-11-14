@@ -61,53 +61,49 @@ int main() {
 
     return 0;
 }
-// Función para mostrar una matriz en la consola
 void mostrarMatriz(double matriz[][ORDEN_MATRIZ], int orden) {
     for (int i = 0; i < orden; i++) {
         for (int j = 0; j < orden; j++) {
-            printf("%12.6f  ", matriz[i][j]); // Formato para alinear la salida
+            printf("%f  ", matriz[i][j]); //alineación de la salida
         }
-        printf("\n");
     }
 }
 
-// Función para mostrar un vector en la consola
 void mostrarVector(double vector[], int orden) {
     for (int i = 0; i < orden; i++) {
-        printf("%12.6f\n", vector[i]); // Formato para alinear la salida
+        printf("%f\n", vector[i]); // alineación de la salida
     }
 }
 
-// Función para realizar la descomposición LU de una matriz
 int descomponerLU(double A[][ORDEN_MATRIZ], double L[][ORDEN_MATRIZ], double U[][ORDEN_MATRIZ], int orden) {
-    // Inicializar las matrices L (inferior) y U (superior)
+    //inicializar las matrices L y U (superior)
     for (int i = 0; i < orden; i++) {
         for (int j = 0; j < orden; j++) {
-            L[i][j] = 0.0; // Inicializar L con ceros
-            U[i][j] = 0.0; // Inicializar U con ceros
+            L[i][j] = 0.0; //inicializar L con ceros
+            U[i][j] = 0.0; //inicializar U con ceros
 
             if (i == j) {
-                L[i][j] = 1.0; // La diagonal de L es 1
+                L[i][j] = 1.0; //elementos de la diagonal de L igual a 1
             }
         }
     }
 
-    // Aplicar el algoritmo de descomposición LU
+    //descomposición LU
     for (int k = 0; k < orden; k++) {
-        U[k][k] = A[k][k]; // El primer elemento de U es igual al de A
+        U[k][k] = A[k][k]; //el primer elemento de U es coincide con el de A
 
-        // Verificar si el pivote es cero (o muy pequeño)
+        // Verificar si el pivote es cero o muy reducido
         if (fabs(U[k][k]) < 1e-12) {
-            return 1; // Error: pivote muy pequeño o cero
+            return 1; //en caso de ser verificado
         }
 
-        // Calcular los elementos de la matriz L y U
+        //calculo de elementos de la matriz L y U
         for (int i = k + 1; i < orden; i++) {
-            L[i][k] = A[i][k] / U[k][k]; // Calcular los elementos de L
-            U[k][i] = A[k][i];             // Calcular los elementos de U
+            L[i][k] = A[i][k] / U[k][k]; //obtención de los elementos de L
+            U[k][i] = A[k][i]; //obtención de los elementos de U
         }
 
-        // Actualizar la matriz A para las siguientes iteraciones
+        // actualización de la matriz A para las siguientes iteraciones
         for (int i = k + 1; i < orden; i++) {
             for (int j = k + 1; j < orden; j++) {
                 A[i][j] = A[i][j] - L[i][k] * U[k][j];
@@ -115,79 +111,79 @@ int descomponerLU(double A[][ORDEN_MATRIZ], double L[][ORDEN_MATRIZ], double U[]
         }
     }
 
-    return 0; // Éxito: descomposición LU completada
+    return 0;
 }
 
-// Función para resolver un sistema de ecuaciones lineales utilizando la descomposición LU
+//función que resuelve el sistema de ecuaciones lineales a través de la descomposición LU
 void resolverSistemaLU(double L[][ORDEN_MATRIZ], double U[][ORDEN_MATRIZ], double b[], double x[], int orden) {
-    double y[ORDEN_MATRIZ]; // Vector auxiliar para resolver el sistema Ly = b
+    double y[ORDEN_MATRIZ]; //vector para resolver el sistema Ly = b
 
-    // Resolver Ly = b (sustitución hacia adelante)
+    //sustitución hacia adelante
     for (int i = 0; i < orden; i++) {
-        y[i] = b[i]; // Inicializar y[i] con el valor correspondiente de b[i]
+        y[i] = b[i]; //inicializar y[i] con el valor correspondiente de b[i]
 
-        // Restar los términos correspondientes a las incógnitas ya resueltas
+        //resta de términos correspondientes a las incógnitas ya resueltas
         for (int j = 0; j < i; j++) {
             y[i] -= L[i][j] * y[j];
         }
     }
 
-    // Resolver Ux = y (sustitución hacia atrás)
+    //realizar sustitución hacia atrás
     for (int i = orden - 1; i >= 0; i--) {
-        x[i] = y[i]; // Inicializar x[i] con el valor correspondiente de y[i]
+        x[i] = y[i]; //inicializacion de  x[i] con el valor correspondiente de y[i]
 
-        // Restar los términos correspondientes a las incógnitas ya resueltas
+        //resta de términos correspondientes a las incógnitas ya resueltas
         for (int j = i + 1; j < orden; j++) {
             x[i] -= U[i][j] * x[j];
         }
 
-        x[i] /= U[i][i]; // Dividir por el coeficiente diagonal
+        x[i] /= U[i][i]; //división por el coeficiente diagonal
     }
 }
 
-// Función para realizar iteraciones de Gauss-Seidel
+//función para realizar iteraciones de Gauss-Seidel
 void iteracionGaussSeidel(double A[][ORDEN_MATRIZ], double b[], double x[], int orden, int maxIteraciones, double tolerancia) {
-    double xNuevo[ORDEN_MATRIZ]; // Vector para almacenar los nuevos valores de x
-    double error;                // Variable para almacenar el error en cada iteración
-    int iter;                    // Contador de iteraciones
+    double xNuevo[ORDEN_MATRIZ]; //vector que almacena los nuevos valores de x
+    double error; //variable que guarda el error en cada iteración
+    int iter; //contador de iteraciones
 
-    // Iterar hasta alcanzar el número máximo de iteraciones o la tolerancia deseada
+    //iterar hasta alcanzar el número máximo de iteraciones o la tolerancia deseada
     for (iter = 0; iter < maxIteraciones; iter++) {
-        error = 0.0; // Inicializar el error en cero
+        error = 0.0; //error inicia en cero
 
-        // Calcular los nuevos valores de x
+        //obtención de los nuevos valores de x
         for (int i = 0; i < orden; i++) {
-            double suma = 0.0; // Inicializar la suma en cero
+            double suma = 0.0; //la suma comienza en cero
 
-            // Calcular la suma de los términos no diagonales
+            //sumar los términos no diagonales
             for (int j = 0; j < orden; j++) {
                 if (i != j) {
                     suma += A[i][j] * x[j];
                 }
             }
 
-            xNuevo[i] = (b[i] - suma) / A[i][i]; // Calcular el nuevo valor de x[i]
-            error += fabs(xNuevo[i] - x[i]);      // Acumular el error absoluto
+            xNuevo[i] = (b[i] - suma) / A[i][i]; //obtención del nuevo valor de x[i]
+            error += fabs(xNuevo[i] - x[i]);      //acumulación del error absoluto
 
-            x[i] = xNuevo[i]; // Actualizar el valor de x[i]
+            x[i] = xNuevo[i]; //valor de x[i] actualizado
         }
 
-        // Verificar si se ha alcanzado la convergencia
+        //verificar si se alcanzó la convergencia
         if (error < tolerancia) {
-            printf("Gauss-Seidel converge en %d iteraciones\n", iter + 1);
+            printf("Con Gauss-Seidel convergio despues de %d iteraciones\n", iter + 1);
             return;
         }
     }
 
-    printf("Gauss-Seidel no converge después de %d iteraciones\n", maxIteraciones);
+    printf("Sin converger con Gauss-Seidel\n");
 }
 
-// Función para resolver un sistema de ecuaciones lineales utilizando el método de Gauss-Jordan
+// que resuelve el sistema de ecuaciones lineales con el método de Gauss-Jordan
 void eliminacionGaussJordan(double A[][ORDEN_MATRIZ], double b[], double x[], int orden) {
-    // Crear una matriz aumentada [A|b]
+    //creación una matriz aumentada [A|b]
     double matrizAumentada[ORDEN_MATRIZ][ORDEN_MATRIZ + 1];
 
-    // Copiar la matriz A y el vector b en la matriz aumentada
+    //la matriz A y el vector b se copian en la matriz aumentada
     for (int i = 0; i < orden; i++) {
         for (int j = 0; j < orden; j++) {
             matrizAumentada[i][j] = A[i][j];
@@ -195,15 +191,15 @@ void eliminacionGaussJordan(double A[][ORDEN_MATRIZ], double b[], double x[], in
         matrizAumentada[i][orden] = b[i];
     }
 
-    // Aplicar el algoritmo de eliminación de Gauss-Jordan
+    // pasos de la eliminación de Gauss-Jordan
     for (int k = 0; k < orden; k++) {
-        // Hacer el elemento diagonal igual a 1
+        // se hacen unos en la diagonal
         double factor = matrizAumentada[k][k];
         for (int j = k; j < orden + 1; j++) {
             matrizAumentada[k][j] /= factor;
         }
 
-        // Hacer ceros en las demás filas
+        //el resto de filas se vuelven 0
         for (int i = 0; i < orden; i++) {
             if (i != k) {
                 factor = matrizAumentada[i][k];
@@ -214,7 +210,7 @@ void eliminacionGaussJordan(double A[][ORDEN_MATRIZ], double b[], double x[], in
         }
     }
 
-    // La solución está en la última columna de la matriz aumentada
+    //solución ubicada en la última columna de la matriz aumentada
     for (int i = 0; i < orden; i++) {
         x[i] = matrizAumentada[i][orden];
     }

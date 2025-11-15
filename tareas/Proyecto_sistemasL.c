@@ -2,36 +2,34 @@
 #include <math.h>
 #include <stdlib.h>
 
-#define N 5          // Número de ecuaciones (etapas del proceso)
-#define MAX_ITER 1000 // Límite de iteraciones para métodos iterativos
-#define TOL 1e-6     // Tolerancia para convergencia
+// Número de ecuaciones 
+#define N 5          
+// Límite de iteraciones para métodos iterativos
+#define MAX_ITER 1000 
+// Tolerancia para convergencia
+#define TOL 1e-6     
 
-/* 
- * Función para imprimir matrices y vectores de forma legible
- * Muestra el sistema Ax = b en formato matricial
- */
+// Función para imprimir matrices y vectores de forma legible. Muestra el sistema Ax = b en formato matricial
 void imprimir_matriz(double mat[N][N], double b[N]) {
     int i, j;
     printf("Sistema matricial A * Y = b:\n");
     for (i = 0; i < N; i++) {
-        printf("| ");
         for (j = 0; j < N; j++) {
-            printf("%8.4f ", mat[i][j]); // Imprime cada elemento de A
+            // Imprimir cada elemento de A
+            printf("%f ", mat[i][j]); 
         }
-        printf(" | | Y%d | = | %8.4f |\n", i+1, b[i]); // Imprime Y_i y b_i
+        // Imprimit Y_i y b_i
+        printf(" | | Y%d | = | %f |\n", i+1, b[i]); 
     }
-    printf("\n");
 }
 
-/* 
- * Función para imprimir el vector solución Y
- * Muestra las concentraciones en cada etapa
- */
+//Función para imprimir el vector solución Y. Muestra las concentraciones en cada etapa
+
 void imprimir_solucion(double y[N]) {
     int i;
     printf("Concentraciones Y_i en cada etapa:\n");
     for (i = 0; i < N; i++) {
-        printf("Y%d = %8.6f (etapa %d)\n", i+1, y[i], i+1);
+        printf("Y%d = %f (etapa %d)\n", i+1, y[i], i+1);
     }
     printf("\n");
 }
@@ -45,7 +43,8 @@ void imprimir_solucion(double y[N]) {
 void gauss_jordan(double A[N][N], double b[N], double y[N]) {
     int i, j, k;
     double factor, temp;
-    double Ab[N][N+1]; // Matriz aumentada: columnas 0 a N-1 son A, columna N es b
+    //Matriz aumentada: columnas 0 a N-1 son A, columna N es b
+    double Ab[N][N+1]; 
     
     printf("=== RESOLVIENDO POR ELIMINACIÓN DE GAUSS-JORDAN ===\n");
     printf("Transformando [A|b] -> [I|y] mediante operaciones elementales\n");

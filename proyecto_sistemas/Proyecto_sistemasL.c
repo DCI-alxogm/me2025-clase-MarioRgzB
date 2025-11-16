@@ -22,9 +22,7 @@ void imprimir_matriz(double mat[N][N], double b[N]) {
         printf(" | | Y%d | = | %f |\n", i+1, b[i]); 
     }
 }
-
 //Función para imprimir el vector solución Y. Muestra las concentraciones en cada etapa
-
 void imprimir_solucion(double y[N]) {
     int i;
     printf("Concentraciones Y_i en cada etapa:\n");
@@ -37,9 +35,7 @@ void gauss_jordan(double A[N][N], double b[N], double y[N]) {
     int i, j, k;
     double factor, temp;
     //Matriz aumentada
-    
     double Ab[N][N+1]; 
-    
     //Construir matriz aumentada [A|b]
     for (i = 0; i < N; i++) {
         for (j = 0; j < N; j++) {
@@ -47,7 +43,6 @@ void gauss_jordan(double A[N][N], double b[N], double y[N]) {
         }
         Ab[i][N] = b[i];        // Agregar vector b como última columna
     }
-    
     //Eliminación para cada columna
     for (i = 0; i < N; i++) {
         // Buscar la fila con el mayor valor absoluto en la columna i
@@ -76,9 +71,8 @@ void gauss_jordan(double A[N][N], double b[N], double y[N]) {
         
         for (j = 0; j <= N; j++) {
             Ab[i][j] /= factor; // Dividir toda la fila por el pivote
-        }
-        
-        // Hacer ceros en toda la columna i, exceputando la diagonal)
+        }   
+        // Hacer ceros en toda la columna i, exceputando la diagonal
         for (k = 0; k < N; k++) {
             if (k != i) { //La fila del pivote se mantiene fija
                 factor = Ab[k][i]; // Factor para eliminar elemento (k,i)
@@ -88,8 +82,7 @@ void gauss_jordan(double A[N][N], double b[N], double y[N]) {
                 }
             }
         }
-    }
-    
+    }    
     //Extraer solución de la última columna de la matriz aumentada
     for (i = 0; i < N; i++) {
     //La solución se encuentra en la última columna 
@@ -101,10 +94,6 @@ void factorizacion_lu(double A[N][N], double b[N], double y[N]) {
     double L[N][N], U[N][N]; // Matrices L y U
     double z[N];             // Vector intermedio z = Uy
     int i, j, k;
-    
-    printf("=== RESOLVIENDO POR FACTORIZACIÓN LU (Doolittle) ===\n");
-    printf("Descomponiendo A = L * U\n");
-    
     // Inicializar matrices L y U con ceros
     for (i = 0; i < N; i++) {
         for (j = 0; j < N; j++) {
@@ -112,7 +101,6 @@ void factorizacion_lu(double A[N][N], double b[N], double y[N]) {
             U[i][j] = 0.0;
         }
     }
-    
     //Descomposición LU
     for (i = 0; i < N; i++) {
         // Calcular elementos de la fila i de U
@@ -123,8 +111,7 @@ void factorizacion_lu(double A[N][N], double b[N], double y[N]) {
             for (k = 0; k < i; k++) {
                 U[i][j] -= L[i][k] * U[k][j];
             }
-        }
-        
+        }   
         // Calcular elementos de la columna i de L (debajo de la diagonal)
         for (j = i; j < N; j++) {
             if (i == j) {
@@ -156,7 +143,6 @@ void factorizacion_lu(double A[N][N], double b[N], double y[N]) {
         }
         z[i] /= L[i][i]; 
     }
-    
     //Sustitución hacia atras
     for (i = N-1; i >= 0; i--) {
         // Empezar con el valor de z
@@ -180,7 +166,6 @@ int gauss_seidel(double A[N][N], double b[N], double y[N]) {
     // Error máximo entre iteraciones
     double error;    
     int iter, i, j;
-    
     // Inicializar solución con valores cero
     for (i = 0; i < N; i++) {
         y[i] = 0.0;
@@ -191,7 +176,6 @@ int gauss_seidel(double A[N][N], double b[N], double y[N]) {
         for (i = 0; i < N; i++) {
             y_ant[i] = y[i];
         }
-        
         // Actualizar cada variable Y_i usando los valores más recientes
         for (i = 0; i < N; i++) {
             double suma = 0.0;
@@ -203,15 +187,14 @@ int gauss_seidel(double A[N][N], double b[N], double y[N]) {
             }
             // Verificar que el elemento diagonal no sea cero
             if (fabs(A[i][i]) < 1e-12) {
-                printf("ERROR: Elemento diagonal A[%d][%d] es cero\n", i, i);
+                printf("Error\n", i, i);
                 return 0;
             }
             // Calcular nuevo valor de Y_i
             y[i] = (b[i] - suma) / A[i][i];
         }
         
-        // --- VERIFICAR CONVERGENCIA ---
-        // Calcular el error máximo entre iteraciones consecutivas
+        //Verificar convergencia al calcular el error máximo entre iteraciones consecutivas
         error = 0.0;
         for (i = 0; i < N; i++) {
             double diff = fabs(y[i] - y_ant[i]);
@@ -219,27 +202,23 @@ int gauss_seidel(double A[N][N], double b[N], double y[N]) {
                 error = diff;
             }
         }
-        
         // Mostrar progreso cada 50 iteraciones
         if ((iter + 1) % 50 == 0) {
             printf("Iteración %d - Error: %e\n", iter+1, error);
         }
-        
         // Verificar si se alcanzó la convergencia
         if (error < TOL) {
-            printf("¡Convergencia alcanzada en %d iteraciones!\n", iter+1);
+            printf("Convergencia alcanzada en %d iteraciones\n", iter+1);
             printf("Error final: %e (menor que tolerancia %e)\n", error, TOL);
             return 1; 
         }
     }
-    
     //Al llegar a este punto, quiere decir que no convergió en el número máximo de iteraciones
     printf("ADVERTENCIA: El método no convergió después de %d iteraciones\n", MAX_ITER);
     printf("Error final: %e (mayor que tolerancia %e)\n", error, TOL);
     printf("Posibles causas: matriz no diagonalmente dominante o tolerancia muy estricta\n");
     return 0; // No convergió
 }
-
 //Esta es la función principal, la cual configura el problema y llama a los tres métodos de solución
 int main() {
     printf("Balance de masa en proceso de 5 etapas\n");
@@ -251,16 +230,13 @@ int main() {
         { 0.0,  1.0, -9.0,  8.0,  0.0}, // Etapa 3: Y2 - 9Y3 + 8Y4 = 0
         { 0.0,  0.0,  1.0, -9.0,  8.0}, // Etapa 4: Y3 - 9Y4 + 8Y5 = 0
         { 0.0,  0.0,  0.0,  1.0, -9.0}  // Etapa 5: Y4 - 9Y5 = 0
-    };
-    
+    };    
     // Vector b: términos independientes del sistema. Solo la primera ecuación tiene término no nulo por Y_ent = 0.1
     double b[N] = {-0.1, 0.0, 0.0, 0.0, 0.0};
-    
     // Vectores para almacenar soluciones de cada método
     double y_gj[N]; // Solución con el método Gauss-Jordan
     double y_lu[N]; // Solución por factorización LU  
     double y_gs[N]; // Solución con el método Gauss-Seidel
-    
     // Mostrar el sistema original
     printf("Sistema original:\n");
     imprimir_matriz(A, b);
@@ -274,7 +250,8 @@ int main() {
     factorizacion_lu(A, b, y_lu);
     imprimir_solucion(y_lu);
     
-    //Solución con el método Gauss-Seidel     gauss_seidel(A, b, y_gs);
+    //Solución con el método Gauss-Seidel     
+    gauss_seidel(A, b, y_gs);
     gauss_seidel(A, b, y_gs);
     imprimir_solucion(y_gs);
     
@@ -284,8 +261,7 @@ int main() {
     double X_exit_lu = K * y_lu[4];
     double X_exit_gs = K * y_gs[4];
     
-    //Impresión de resultados y comparaciones de los métodos     printf("Resultados");
-    printf("Variable de salida Y5 (concentración en última etapa):\n");
+    //Impresión de resultados y comparaciones de los métodos
     printf("Gauss-Jordan:  Y5 = %f\n", y_gj[4]);
     printf("Factorización LU: Y5 = %f\n", y_lu[4]);
     printf("Gauss-Seidel:  Y5 = %f\n", y_gs[4]);

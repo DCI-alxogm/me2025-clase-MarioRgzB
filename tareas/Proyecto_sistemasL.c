@@ -240,10 +240,7 @@ int gauss_seidel(double A[N][N], double b[N], double y[N]) {
     return 0; // No convergió
 }
 
-/* 
- * ========== FUNCIÓN PRINCIPAL ==========
- * Configura el problema y llama a los tres métodos de solución
- */
+//Esta es la función principal, la cual configura el problema y llama a los tres métodos de solución
 int main() {
     printf("Balance de masa en proceso de 5 etapas\n");
     printf("F1 = 500 kg/h, Y_ent = 0.1, F2 = 1000 kg/h, X_ent = 0, K = 4\n");

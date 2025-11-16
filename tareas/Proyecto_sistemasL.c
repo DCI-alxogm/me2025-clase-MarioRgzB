@@ -18,7 +18,7 @@ void imprimir_matriz(double mat[N][N], double b[N]) {
             // Imprimir cada elemento de A
             printf("%f ", mat[i][j]); 
         }
-        // Imprimit Y_i y b_i
+        // Imprimir Y_i y b_i
         printf(" | | Y%d | = | %f |\n", i+1, b[i]); 
     }
 }
@@ -31,25 +31,16 @@ void imprimir_solucion(double y[N]) {
     for (i = 0; i < N; i++) {
         printf("Y%d = %f (etapa %d)\n", i+1, y[i], i+1);
     }
-    printf("\n");
 }
-
-/* 
- * ========== MÉTODO GAUSS-JORDAN ==========
- * Transforma la matriz aumentada [A|b] a [I|y] mediante operaciones elementales
- * Ventaja: No requiere sustitución hacia atrás
- * Desventaja: Computacionalmente más costoso para matrices grandes
- */
+//Función para hacer uso de la función Gauss-Jordan, la cual transforma la matriz aumentada 
 void gauss_jordan(double A[N][N], double b[N], double y[N]) {
     int i, j, k;
     double factor, temp;
-    //Matriz aumentada: columnas 0 a N-1 son A, columna N es b
+    //Matriz aumentada
+    
     double Ab[N][N+1]; 
     
-    printf("=== RESOLVIENDO POR ELIMINACIÓN DE GAUSS-JORDAN ===\n");
-    printf("Transformando [A|b] -> [I|y] mediante operaciones elementales\n");
-    
-    // Paso 1: Construir matriz aumentada [A|b]
+    //Construir matriz aumentada [A|b]
     for (i = 0; i < N; i++) {
         for (j = 0; j < N; j++) {
             Ab[i][j] = A[i][j]; // Copiar matriz A
@@ -57,9 +48,8 @@ void gauss_jordan(double A[N][N], double b[N], double y[N]) {
         Ab[i][N] = b[i];        // Agregar vector b como última columna
     }
     
-    // Paso 2: Proceso de eliminación para cada columna/pivote
+    //Eliminación para cada columna
     for (i = 0; i < N; i++) {
-        // --- PIVOTEO PARCIAL ---
         // Buscar la fila con el mayor valor absoluto en la columna i
         int max_fila = i;
         for (k = i+1; k < N; k++) {
@@ -70,19 +60,17 @@ void gauss_jordan(double A[N][N], double b[N], double y[N]) {
         
         // Intercambiar filas si se encontró un pivote mayor
         if (max_fila != i) {
-            printf("Intercambiando fila %d con fila %d para mejor pivote\n", i+1, max_fila+1);
+            printf("La fila %d se intercambia con fila %d\n", i+1, max_fila+1);
             for (j = 0; j <= N; j++) {
                 temp = Ab[i][j];
                 Ab[i][j] = Ab[max_fila][j];
                 Ab[max_fila][j] = temp;
             }
         }
-        
-        // --- NORMALIZAR FILA PIVOTE ---
-        // Hacer que el elemento diagonal sea 1 dividiendo toda la fila por Ab[i][i]
+        //Se hacen unos en la diagonal 
         factor = Ab[i][i];
         if (fabs(factor) < 1e-12) {
-            printf("ERROR: Sistema singular detectado - pivote cercano a cero\n");
+            printf("error\n");
             return;
         }
         
@@ -90,10 +78,9 @@ void gauss_jordan(double A[N][N], double b[N], double y[N]) {
             Ab[i][j] /= factor; // Dividir toda la fila por el pivote
         }
         
-        // --- ELIMINACIÓN EN COLUMNA i ---
-        // Hacer ceros en toda la columna i (excepto en la diagonal)
+        // Hacer ceros en toda la columna i, exceputando la diagonal)
         for (k = 0; k < N; k++) {
-            if (k != i) { // No modificar la fila del pivote
+            if (k != i) { //La fila del pivote se mantiene fija
                 factor = Ab[k][i]; // Factor para eliminar elemento (k,i)
                 for (j = 0; j <= N; j++) {
                     // Restar múltiplo de la fila pivote a la fila k
@@ -101,25 +88,15 @@ void gauss_jordan(double A[N][N], double b[N], double y[N]) {
                 }
             }
         }
-        
-        printf("Pivote %d procesado - matriz diagonalizada parcialmente\n", i+1);
     }
     
-    // Paso 3: Extraer solución de la última columna de la matriz aumentada
+    //Extraer solución de la última columna de la matriz aumentada
     for (i = 0; i < N; i++) {
-        y[i] = Ab[i][N]; // La solución está en la última columna
+    //La solución se encuentra en la última columna 
+        y[i] = Ab[i][N]; 
     }
-    
-    printf("Proceso de Gauss-Jordan completado - matriz identidad alcanzada\n");
 }
-
-/* 
- * ========== FACTORIZACIÓN LU (MÉTODO DE DOOLITTLE) ==========
- * Descompone A en L (triangular inferior) y U (triangular superior)
- * L tiene 1's en la diagonal
- * Resuelve: 1) Lz = b (sustitución hacia adelante)
- *           2) Uy = z (sustitución hacia atrás)
- */
+//Resolución por factorización LU
 void factorizacion_lu(double A[N][N], double b[N], double y[N]) {
     double L[N][N], U[N][N]; // Matrices L y U
     double z[N];             // Vector intermedio z = Uy

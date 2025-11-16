@@ -113,12 +113,12 @@ void factorizacion_lu(double A[N][N], double b[N], double y[N]) {
         }
     }
     
-    // --- DESCOMPOSICIÓN LU ---
-    printf("Iniciando descomposición LU...\n");
+    //Descomposición LU
     for (i = 0; i < N; i++) {
         // Calcular elementos de la fila i de U
         for (j = i; j < N; j++) {
-            U[i][j] = A[i][j]; // Empezar con el valor original de A
+            // Empezar con el valor original de A
+            U[i][j] = A[i][j]; 
             // Restar producto de elementos ya calculados de L y U
             for (k = 0; k < i; k++) {
                 U[i][j] -= L[i][k] * U[k][j];
@@ -128,74 +128,64 @@ void factorizacion_lu(double A[N][N], double b[N], double y[N]) {
         // Calcular elementos de la columna i de L (debajo de la diagonal)
         for (j = i; j < N; j++) {
             if (i == j) {
-                L[i][i] = 1.0; // Diagonal de L siempre es 1
+                // Diagonal de L siempre es 1
+                L[i][i] = 1.0; 
             } else {
-                L[j][i] = A[j][i]; // Empezar con el valor original de A
+                // Empezar con el valor original de A
+                L[j][i] = A[j][i]; 
                 // Restar producto de elementos ya calculados de L y U
                 for (k = 0; k < i; k++) {
                     L[j][i] -= L[j][k] * U[k][i];
                 }
                 // Dividir por el elemento diagonal de U
                 if (fabs(U[i][i]) < 1e-12) {
-                    printf("ERROR: División por cero en elemento U[%d][%d]\n", i, i);
+                    printf("Error\n");
                     return;
                 }
                 L[j][i] /= U[i][i];
             }
         }
     }
-    
-    printf("Descomposición LU completada\n");
-    
-    // --- SUSTITUCIÓN HACIA ADELANTE: Resolver Lz = b ---
-    printf("Resolviendo Lz = b (sustitución hacia adelante)\n");
+    //Sustitucion hacia adelante 
     for (i = 0; i < N; i++) {
-        z[i] = b[i]; // Empezar con el valor de b
+        // Empezar con el valor de b
+        z[i] = b[i]; 
         // Restar contribuciones de elementos ya calculados
         for (j = 0; j < i; j++) {
             z[i] -= L[i][j] * z[j];
         }
-        z[i] /= L[i][i]; // L[i][i] es siempre 1, pero por claridad
+        z[i] /= L[i][i]; 
     }
     
-    // --- SUSTITUCIÓN HACIA ATRÁS: Resolver Uy = z ---
-    printf("Resolviendo Uy = z (sustitución hacia atrás)\n");
+    //Sustitución hacia atras
     for (i = N-1; i >= 0; i--) {
-        y[i] = z[i]; // Empezar con el valor de z
+        // Empezar con el valor de z
+        y[i] = z[i]; 
         // Restar contribuciones de elementos ya calculados
         for (j = i+1; j < N; j++) {
             y[i] -= U[i][j] * y[j];
         }
         // Dividir por el elemento diagonal de U
         if (fabs(U[i][i]) < 1e-12) {
-            printf("ERROR: Elemento diagonal U[%d][%d] es cero\n", i, i);
+            printf("Error\n");
             return;
         }
         y[i] /= U[i][i];
     }
-    
-    printf("Sustituciones completadas - solución obtenida\n");
 }
-
-/* 
- * ========== MÉTODO GAUSS-SEIDEL ==========
- * Método iterativo que actualiza cada variable usando los valores más recientes
- * Converge para matrices diagonalmente dominantes (como nuestra matriz tridiagonal)
- */
+//Resolución con el método Gauss-Seidel 
 int gauss_seidel(double A[N][N], double b[N], double y[N]) {
-    double y_ant[N]; // Almacena la solución de la iteración anterior
-    double error;    // Error máximo entre iteraciones
+    // Almacena la solución de la iteración anterior
+    double y_ant[N]; 
+    // Error máximo entre iteraciones
+    double error;    
     int iter, i, j;
-    
-    printf("=== RESOLVIENDO POR MÉTODO ITERATIVO GAUSS-SEIDEL ===\n");
-    printf("Iterando hasta convergencia (tolerancia: %e)\n", TOL);
     
     // Inicializar solución con valores cero
     for (i = 0; i < N; i++) {
         y[i] = 0.0;
     }
     
-    // --- ITERACIONES PRINCIPALES ---
     for (iter = 0; iter < MAX_ITER; iter++) {
         // Guardar solución de la iteración anterior para calcular error
         for (i = 0; i < N; i++) {
@@ -239,11 +229,11 @@ int gauss_seidel(double A[N][N], double b[N], double y[N]) {
         if (error < TOL) {
             printf("¡Convergencia alcanzada en %d iteraciones!\n", iter+1);
             printf("Error final: %e (menor que tolerancia %e)\n", error, TOL);
-            return 1; // Éxito
+            return 1; 
         }
     }
     
-    // Si llegamos aquí, no convergió en el número máximo de iteraciones
+    //Al llegar a este punto, quiere decir que no convergió en el número máximo de iteraciones
     printf("ADVERTENCIA: El método no convergió después de %d iteraciones\n", MAX_ITER);
     printf("Error final: %e (mayor que tolerancia %e)\n", error, TOL);
     printf("Posibles causas: matriz no diagonalmente dominante o tolerancia muy estricta\n");

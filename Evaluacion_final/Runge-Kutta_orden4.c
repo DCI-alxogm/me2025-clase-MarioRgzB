@@ -34,7 +34,7 @@ int main() {
     double t = t0;
     double C = C0;
     
-    printf("%d  %10.4f  %10.6f\n", 0, t, C);
+    printf("%d  %f  %f\n", 0, t, C);
     
     for(i = 1; i <= n; i++) {
         double k1, k2, k3, k4;

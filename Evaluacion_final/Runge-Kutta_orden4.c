@@ -47,14 +47,11 @@ int main() {
         C = C + (h/6.0) * (k1 + 2*k2 + 2*k3 + k4);
         t = t + h;
         
-        printf("%d  %10.4f  %10.6f  %10.6f  %10.6f  %10.6f  %10.6f\n", 
+        printf("%d  %f  %f  %f  %f  %f  %f\n", 
                i, t, C, k1, k2, k3, k4);
     }
     
-    printf("\n===========================================\n");
-    printf("RESULTADO FINAL (RK4):\n");
     printf("C(%f) = %f mol/L\n", t_final, C);
-    printf("===========================================\n");
     
     return 0;
 }

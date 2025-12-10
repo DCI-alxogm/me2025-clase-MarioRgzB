@@ -1,1 +1,14 @@
+El método de Runge Kutta de cuarto orden es mejor porque ofrece mucha mayor precisión con un costo computacional razonable. 
+Para el problema de la reacción química con la ecuación logística los parámetros son concentración inicial de 0.02 mol por 
+litro constante cinética de 0.45 litros por mol por minuto y concentración máxima de 1 mol por litro con un intervalo de 
+tiempo de 0 a 25 minutos y paso de 0.1 minutos.
+Con el método de cuarto orden se obtiene un resultado muy preciso de la concentración final cercana a 1 mol por litro el
+método de segundo orden con el mismo paso de 0.1 da menos precisión especialmente cuando la concentración se acerca al valor 
+máximo.
+Para lograr la misma precisión con el método de segundo orden que con el de cuarto orden usando paso de 0.1 se necesitaría 
+reducir el paso a aproximadamente 0.01 minutos esto significa que en lugar de 250 pasos se requerirían 2500 pasos haciendo
+el cálculo cinco veces más costoso en términos de evaluaciones totales de la función.
 
+La ventaja clave del método de cuarto orden es su eficiencia logra alta precisión sin necesidad de pasos extremadamente 
+pequeños por eso es el método preferido en aplicaciones científicas e ingenieriles donde se requiere exactitud en la predicción 
+de comportamientos dinámicos como esta reacción química
